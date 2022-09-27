@@ -9,7 +9,7 @@ hi def link javaBoolean         Boolean
 hi def link javaFloat           Float
 "-------------------------------------------------
 hi def link javaIdentifier      Identifier
-hi def link javaFunction        Import
+hi def link javaFunction        Function
 "-------------------------------------------------
 hi def link javaStatement       Statement
 hi def link javaConditional     Conditional
@@ -20,7 +20,7 @@ hi def link javaKeyword         Keyword
 hi def link javaException       Exception
 "-------------------------------------------------
 hi def link javaPreProc         PreProc
-hi def link javaInclude         Keyword
+hi def link javaInclude         Include
 hi def link javaDefine          Define
 hi def link javaMacro           Macro
 hi def link javaPreCondit       PreCondit

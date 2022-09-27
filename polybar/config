@@ -15,7 +15,7 @@ cyan       = #8ec07c
 [bar/mainscreen]
 ; Size
 width  = 100%
-height = 30
+height = 25
 
 ; Offset
 ;offset-x = 50%
@@ -23,7 +23,7 @@ height = 30
 
 ; Position
 ; bottom = true
-monitor = HDMI-0
+monitor = eDP1
 
 ; Radius
 radius = 0
@@ -56,27 +56,42 @@ module-margin-right = 0
 
 ; Font
 font-0 = Source Code Pro:size=9;2
-font-1 = Iosevka:size=17;4
-font-2 = Iosevka Nerd Font:size=17;4
+font-1 = Iosevka:size=9;2
+font-2 = Iosevka Nerd Font:size=9;2
 
 wm-restack = bspwm
 
 ; Modlues
 modules-left   = bspwm
 ; modules-center = 
-modules-right  = network sep xkeyboard sep time sep date sep lock logout poweroff
+modules-right  = network sep pulseaudio sep battery sep xkeyboard sep time sep date sep lock logout poweroff
 
 ; Cursor actions
 cursor-click  = pointer
 cursor-scroll = ns-resize
 
+[module/battery]
+type = internal/battery
+
+battery = BAT0
+adapter = AC
+
+label-full = %percentage%%
+format-full = FULL <label-full>
+
+label-charging = %percentage%%
+format-charging = CHR <label-charging>
+
+label-discharging = %percentage%%
+format-discharging = <label-discharging>
+
 [module/pulseaudio]
 type = internal/pulseaudio
 use-ui-max = true
 format-volume = <ramp-volume> <bar-volume>
-ramp-volume-0 = 
-ramp-volume-1 = 
-ramp-volume-2 = 
+ramp-volume-0 = VOL 
+ramp-volume-1 = VOL
+ramp-volume-2 = VOL
 
 bar-volume-width = 10
 bar-volume-gradient = false
@@ -91,28 +106,28 @@ bar-volume-fill-foreground = ${colors.foreground}
 
 ramp-volume-foreground = ${colors.foreground}
 click-right = pavucontrol
-label-muted = ﱝ □□□□□□□□□
+label-muted = MUT □□□□□□□□□
 label-muted-foreground = ${colors.red}
 
 [module/network]
 type = internal/network
-interface = enp3s6
+interface = wlp2s0
 interval = 3.0
 udspeed-minwidth = 5
 accumulate-stats = true
 unknown-as-up = true
 speed-unit = 
 
-format-connected = <label-connected> <ramp-signal> 
+format-connected = <label-connected> 
 format-disconnected = <label-disconnected>
-label-disconnected = 睊
+label-disconnected = NO NETWORK
 label-connected = %downspeed:0%
-ramp-signal-0 = 直 
+ramp-signal-0 = 直  
 
 [module/sep]
 type = custom/text
-content = |
-content-foreground = ${colors.foreground}
+content = <
+content-foreground = ${colors.cyan}
 content-padding = 1
 
 [module/time]
@@ -125,7 +140,7 @@ interval = 1.0
 time = %H:%M:%S
 
 ; Label
-label            =  %time%
+label            = %time%
 label-foreground = ${colors.foreground}
 label-padding    = 0
 
@@ -182,7 +197,7 @@ interval = 1.0
 date = %A %d %B
 
 ; Label
-label            =  %date%
+label            = %date%
 label-foreground = ${colors.foreground}
 ; label-background = ${colors.orange}
 label-padding    = 0
@@ -194,8 +209,8 @@ type = internal/xkeyboard
 ; List of indicators to ignore
 blacklist-0 = num lock
 blacklist-1 = scroll lock
-layout-icon-0 = us
-layout-icon-1 = ru
+layout-icon-0 = US
+layout-icon-1 = RU
 label-layout-padding = 0
 label-layout-foreground = ${colors.foreground}
 label-layout-background = ${colors.default}
