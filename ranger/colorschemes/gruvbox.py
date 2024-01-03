@@ -2,22 +2,21 @@ from ranger.gui.colorscheme import ColorScheme
 from ranger.gui.color import *
 
 class Default(ColorScheme):
-	def use(self, context):
-		fg, bg, attr = default_colors
-
-		if context.reset:
-			return default_colors
-
-		elif context.in_browser:
-			if context.selected:
-				attr = reverse
-			else:
-				attr = normal
-			if context.empty or context.error:
-    			bg = cyan
- 				fg = white
-			if context.border:
-				attr = normal
+    def use(self, context):
+        fg, bg, attr = default_colors
+        
+        if context.reset:
+            return default_colors
+        elif context.in_browser:
+            if context.selected:
+                attr = reverse
+            else:
+                attr = normal
+            if context.empty or context.error:
+                bg = cyan
+                fg = white
+            if context.border:
+                attr = normal
 				fg = black
 			if context.media:
 				if context.image:
@@ -25,7 +24,7 @@ class Default(ColorScheme):
 				else:
 					fg =  magenta
 			if context.container:
-				attr |= bold
+				attr |= normal
 				fg = cyan
 			if context.directory:
 				attr |= normal
@@ -40,23 +39,23 @@ class Default(ColorScheme):
 			if context.fifo or context.device:
 				fg = yellow
 				if context.device:
-					attr |= bold
+					attr |= normal
 			if context.link:
 				fg = context.good and cyan or magenta
 			if context.tag_marker and not context.selected:
-				attr |= bold
+				attr |= normal
 				if fg in (red, magenta):
 					fg = white
 				else:
 					fg = red
 			if not context.selected and (context.cut or context.copied):
 				fg = magenta
-				attr |= bold
+				attr |= normal
 			if context.main_column:
 				if context.selected:
 					attr |= normal
 				if context.marked:
-					#attr |= bold
+					#attr |= normal
 					bg = black
 					fg = yellow
 			if context.badinfo:
@@ -68,7 +67,7 @@ class Default(ColorScheme):
 		elif context.in_titlebar:
 			attr |= normal
 			if context.hostname:
-				# attr |= bold
+				# attr |= normal
 				fg = context.bad and magenta or red
 			elif context.directory:
 				fg = cyan
@@ -85,11 +84,11 @@ class Default(ColorScheme):
 				elif context.bad:
 					fg = magenta
 			if context.marked:
-				attr |= bold | reverse
+				attr |= normal | reverse
 				fg = yellow
 			if context.message:
 				if context.bad:
-					attr |= bold
+					attr |= normal
 					fg = red
 
 		if context.text:

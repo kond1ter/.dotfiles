@@ -1,4 +1,5 @@
 [colors]
+; background = #1d2021
 background = #1d2021
 default = #1d2021
 foreground = #ebdbb2
@@ -12,10 +13,16 @@ orange     = #fe8019
 gray       = #a89984
 cyan       = #8ec07c
 
+# foreground = #1d2021
+# default = #ebdbb2
+# background = #ebdbb2
+
 [bar/mainscreen]
+monitor = ${env:MONITOR:}
 ; Size
 width  = 100%
-height = 25
+height = 28
+pseudo-transparency = false
 
 ; Offset
 ;offset-x = 50%
@@ -23,8 +30,8 @@ height = 25
 
 ; Position
 ; bottom = true
-monitor = eDP1
-
+offset-x = 0
+offset-y = 0
 ; Radius
 radius = 0
 
@@ -36,12 +43,12 @@ background = ${colors.background}
 foreground = ${colors.foreground}
 
 ; Underline
-line-size  = 2
+line-size  = 0
 line-color = ${colors.foreground}
 
 ; Border
 border-size  = 0
-border-color = #00000000
+border-color = #ebdbb2 
 
 ; Padding
 padding-left  = 1
@@ -55,20 +62,25 @@ module-margin-left  = 0
 module-margin-right = 0
 
 ; Font
-font-0 = Source Code Pro:size=9;2
-font-1 = Iosevka:size=9;2
-font-2 = Iosevka Nerd Font:size=9;2
+font-0 = CartographCF:size=10;1
+font-1 = Iosevka:size=10;2
+font-2 = Iosevka Nerd Font:size=10;2
 
 wm-restack = bspwm
 
 ; Modlues
-modules-left   = bspwm
+modules-left   = bspwm playerctl
 ; modules-center = 
-modules-right  = network sep pulseaudio sep battery sep xkeyboard sep time sep date sep lock logout poweroff
+modules-right  = network network1 sep pulseaudio sep battery sep xkeyboard sep time sep date sep lock logout poweroff
 
 ; Cursor actions
 cursor-click  = pointer
 cursor-scroll = ns-resize
+
+[module/playerctl]
+type = custom/script
+exec = /home/konditer/.scripts/player
+interval = 0.5
 
 [module/battery]
 type = internal/battery
@@ -80,10 +92,12 @@ label-full = %percentage%%
 format-full = FULL <label-full>
 
 label-charging = %percentage%%
-format-charging = CHR <label-charging>
+format-charging = CRG <label-charging>
 
 label-discharging = %percentage%%
 format-discharging = <label-discharging>
+format-charging-foreground = ${colors.foreground}
+format-discharging-foreground = ${colors.foreground}
 
 [module/pulseaudio]
 type = internal/pulseaudio
@@ -109,26 +123,46 @@ click-right = pavucontrol
 label-muted = MUT □□□□□□□□□
 label-muted-foreground = ${colors.red}
 
-[module/network]
+[module/network1]
 type = internal/network
-interface = wlp2s0
+interface-type = wired
 interval = 3.0
 udspeed-minwidth = 5
 accumulate-stats = true
 unknown-as-up = true
 speed-unit = 
 
-format-connected = <label-connected> 
+format-connected = <label-connected>
 format-disconnected = <label-disconnected>
-label-disconnected = NO NETWORK
-label-connected = %downspeed:0%
+label-disconnected = 
+label-connected = " | WIRED %downspeed:0%"
+label-connected-foreground = ${colors.foreground}
+label-disconnected-foreground = ${colors.red}
+
+[module/network]
+type = internal/network
+interface-type = wireless
+interval = 3.0
+udspeed-minwidth = 5
+accumulate-stats = true
+unknown-as-up = true
+speed-unit = 
+
+format-connected = <label-connected>
+format-disconnected = <label-disconnected>
+label-disconnected = %{A1:kitty --name nmconnect ~/.scripts/nmconnect:} NO WIFI%{A}
+label-connected = %{A1:kitty --name nmconnect ~/.scripts/nmconnect:} %downspeed:0%%{A} 
 ramp-signal-0 = 直  
+
+label-connected-foreground = ${colors.foreground}
+label-disconnected-foreground = ${colors.red}
 
 [module/sep]
 type = custom/text
 content = <
 content-foreground = ${colors.cyan}
 content-padding = 1
+
 
 [module/time]
 type = internal/date
@@ -159,7 +193,6 @@ ws-icon-6 = 7;
 ws-icon-7 = 8;
 ws-icon-8 = 9;
 ws-icon-default = 
-
 
 label-focused-foreground = ${colors.foreground}
 label-focused-background = ${colors.background}
@@ -194,7 +227,7 @@ type = internal/date
 interval = 1.0
 
 ; Format
-date = %A %d %B
+date = %a %d.%m.%y
 
 ; Label
 label            = %date%
@@ -209,11 +242,12 @@ type = internal/xkeyboard
 ; List of indicators to ignore
 blacklist-0 = num lock
 blacklist-1 = scroll lock
-layout-icon-0 = US
-layout-icon-1 = RU
+layout-icon-0 = us
+layout-icon-1 = ru
 label-layout-padding = 0
 label-layout-foreground = ${colors.foreground}
 label-layout-background = ${colors.default}
+
 
 [module/poweroff]
 type = custom/text
@@ -224,15 +258,15 @@ content-background = ${colors.default}
 content-foreground = ${colors.red}
 content-padding    = 1
 
-
 ; Mouse click
 click-left = poweroff
+
 
 [module/lock]
 type = custom/text
 
 ; Label
-content            = 	
+content            = 
 content-background = ${colors.default}
 content-foreground = ${colors.blue}
 content-padding    = 1
@@ -251,6 +285,7 @@ content-padding    = 1
 
 click-left = reboot
 
+
 [settings]
 screenchange-reload     = true
 ;compositing-background = xor
@@ -258,6 +293,7 @@ screenchange-reload     = true
 ;compositing-border     = over
 ;pseudo-transparency    = false
 
+
 [global/wm]
 margin-top    = 1
-margin-bottom = 1
+margin-bottom = 0
