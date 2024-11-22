@@ -1,0 +1,127 @@
+#!/bin/bash
+
+loopexit=1
+
+while [ $loopexit -eq 1 ]
+do
+	netstatus=$(systemctl status NetworkManager | grep "Active:" | head -n1 | awk '{print $2}')
+	operation=$(echo -e "Connect to wifi\nShow connections\nTurn WiFi on\nTurn WiFi off\nRestart network\nTurn network on\nTurn network off\nTurn Bluetooth on\nTurn Bluetooth off" | fzf --reverse --color bw --no-scrollbar --header="NetworkManager Status: $netstatus" --info=hidden --header="" --disabled --prompt="  Network Manager " --bind="change:clear-query")
+
+	if [[ "$operation" == "" ]]
+	then exit 1; fi
+	
+	if [[ "$operation" == "Show connections" ]]
+	then
+		echo $(nmcli -f STATE,CONNECTION d | fzf --reverse --no-info --no-scrollbar --color bw --header-lines=1 --disabled --prompt="  Connections: " --bind="change:clear-query" | head -n1)
+		clear; continue
+	fi
+
+	if [[ "$operation" == "Restart network" ]]
+	then
+		sudo systemctl restart NetworkManager
+		echo "Succesfully Restarted"
+		read operation_done; clear; continue
+	fi
+
+	if [[ "$operation" == "Turn network off" ]]
+	then
+		sudo systemctl stop NetworkManager
+		echo "Network succesfully turned off"
+		read operation_done; clear; continue
+	fi
+	
+	if [[ "$operation" == "Turn network on" ]]
+	then
+		sudo systemctl start NetworkManager
+		echo "Network succesfully turned on"
+		read operation_done; clear; continue
+	fi
+
+	if [[ "$operation" == "Turn WiFi on" ]]
+	then
+		nmcli radio wifi on
+		echo "WiFi succesfully turned on"
+		read operation_done; clear; continue
+	fi
+
+	if [[ "$operation" == "Turn WiFi off" ]]
+	then
+		nmcli radio wifi off
+		echo "WiFi succesfully turned off"
+		read operation_done; clear; continue
+	fi
+	
+	if [[ "$operation" == "Turn Bluetooth on" ]]
+	then
+		sudo systemctl start bluetooth.service
+		echo "Bluetooth succesfully turned on"
+		read operation_done; clear; continue
+	fi
+
+	if [[ "$operation" == "Turn Bluetooth off" ]]
+	then
+		sudo systemctl stop bluetooth.service
+		echo "Bluetooth succesfully turned off"
+		read operation_done; clear; continue
+	fi
+
+	if [[ "$operation" == "Connect to wifi" ]]
+	then
+		# netstatus=$(systemctl status NetworkManager | grep "Active:" | head -n1 | awk '{print $2}')
+		netstatus=$(nmcli d status | grep wifi | awk '{print $3}')
+
+		if [[ "$netstatus" == "unavailable" ]]
+		then
+			echo "WIFI is unavailable"
+			read operation_done; clear; continue
+		fi
+
+		# network=$(nmcli -f SSID,SECURITY d wifi | fzf --reverse --no-info --no-scrollbar --color bw --header-lines=1 --disabled --prompt="  Choose the Network " --bind="change:clear-query" | head -n1)
+		network=$(nmcli -f BSSID,SSID,SECURITY d wifi | fzf --reverse --no-info --no-scrollbar --color bw --header-lines=1 --disabled --prompt="  Choose the Network " --bind="change:clear-query" | awk '{print $1}')
+		# networkInfo=$(nmcli -f IN-USE,SSID,SECURITY d wifi | grep "$network")
+		# inuse=$(echo "$networkInfo" | awk '{print $1}')
+		
+		# if [[ "$inuse" == "*" ]]
+		# then
+		# 	echo "Already in use"
+		# 	read operation_done; clear; continue
+		# else
+		# 	bssid=$(echo "$network")
+		# 	security=$(echo "$network" | awk '{print $3}')
+		# fi
+		
+	 	bssid=$(echo "$network")
+	 	security=$(echo "$network" | awk '{print $3}')
+		
+		if [[ "$bssid" == "" ]]
+		then continue; fi
+		
+		if [[ "$security" == "--" ]]
+		then
+			nmcli d wifi connect $bssid
+			read operation_done; clear; continue
+		fi
+		
+		if [[ "$security" != "--" ]]
+		then
+			needpass=$(echo -e "YES\nNO" | fzf --reverse --color bw --no-scrollbar --header="" --no-info --disabled --prompt="  Enter Password? " --bind="change:clear-query")
+			
+			if [[ "$needpass" == "" ]]
+			then clear; continue; fi
+
+			if [[ "$needpass" == "NO" ]]
+			then
+				nmcli d wifi connect $bssid
+				read operation_done; clear; continue
+			else
+				echo "Password:"
+				read pass
+				nmcli d wifi connect $bssid password $pass
+				read operation_done; clear; continue
+			fi
+		fi
+	fi
+done
+
+
+

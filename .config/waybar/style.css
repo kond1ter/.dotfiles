@@ -1,0 +1,100 @@
+* {
+	font-size: 0.98em;
+	font-family: "Iosevks Nerd Font";
+    font-weight: 700;
+}
+
+window#waybar {
+	background: #1d2021;
+    opacity: 1;
+	color: #ebdbb2;
+}
+
+#custom-right-arrow-dark,
+#custom-left-arrow-dark {
+	color: #1a1a1a;
+}
+#custom-right-arrow-light,
+#custom-left-arrow-light {
+	color: #292b2e;
+	background: #1a1a1a;
+}
+
+#workspaces,
+/* #clock.1, */
+/* #clock.2, */
+/* #clock.3, */
+#pulseaudio,
+#memory,
+#cpu,
+#battery,
+#disk,
+#tray,
+#network,
+#language {
+    color: #ebdbb2;
+	padding: 0 10px;
+	/* background: #303030; */
+    background: transparent;
+    margin: 3px 2px;
+    border-radius: 5px;
+}
+
+#workspaces {
+    padding: 0;
+}
+
+#workspaces button {
+    transition: padding, 0.3s;
+	padding: 0 4px;
+    margin: 0;
+	color: #ebdbb2;
+}
+#workspaces button.active {
+    padding: 0 15px;
+    background: #ebdbb2;
+	color: #282828;
+    border: 1px solid #ebdbb2;
+}
+
+#workspaces button.active:hover {
+    padding: 0 15px;
+    background: #ebdbb2;
+	color: #282828;
+}
+#workspaces button:hover {
+    transition: none;
+    border: 1px solid #393939;
+    border-radius: 5;
+	background: #393939;
+}
+
+/* #pulseaudio { */
+/* 	color: #268bd2; */
+/* } */
+/* #memory { */
+/* 	color: #2aa198; */
+/* } */
+/* #cpu { */
+/* 	color: #6c71c4; */
+/* } */
+/* #battery { */
+/* 	color: #859900; */
+/* } */
+/* #disk { */
+/* 	color: #b58900; */
+/* } */
+
+#clock,
+#pulseaudio,
+#memory,
+#cpu,
+#battery,
+#disk {
+    color: #ebdbb2;
+	padding: 0 10px;
+	/* background: #303030; */
+    background: transparent;
+    margin: 3px 2px;
+    border-radius: 5px;
+}

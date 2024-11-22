@@ -1,0 +1,3 @@
+#!/bin/bash
+
+compgen -c | fzf --layout=reverse --color=bw --no-scrollbar --no-info --header="" | xargs /home/konditer/.go/bin/lnch

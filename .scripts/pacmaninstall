@@ -1,0 +1,85 @@
+#!/bin/bash
+
+exit_loop=1
+
+while [ $exit_loop == 1 ]
+do
+	operation=$(echo -e "Install package
+Remove package
+List packages
+Autoremove
+AUR Install
+AUR Remove
+AUR List packages
+AUR Autoremove" | fzf --layout=reverse \
+		--color=bw --no-info --header="" \
+		--disabled --prompt="  Package Manager " \
+		--bind="change:clear-query")
+	
+	if [[ "$operation" == "" ]]
+	then exit 1; fi
+
+	if [[ "$operation" == "Install package" ]]
+	then
+		netstatus=$(systemctl status NetworkManager | grep "Active:" | head -n1 | awk '{print $2}')
+		if [[ "$netstatus" != "active" ]]
+		then echo "No network"; read operation_done; clear; continue; fi
+
+		lib=$(pacman -Slq | fzf --color=bw --reverse --no-scrollbar --preview 'pacman -Si {}' --layout=reverse)
+		if [[ "$lib" == "" ]]
+		then clear; continue; fi 
+		clear
+		if [[ "$lib" != "" ]]; then sudo pacman -S $lib; fi
+		echo -e "\nInstallation Finished"; read operation_done; clear; continue
+	fi
+
+	if [[ "$operation" == "Remove package" ]]
+	then
+		lib=$(pacman -Qq | fzf --color=bw --reverse --no-scrollbar --preview 'pacman -Qil {}' --layout=reverse)
+		if [[ "$lib" == "" ]]
+		then clear; continue; fi 
+		clear
+		if [[ "$lib" != "" ]]; then sudo pacman -R $lib; fi
+		echo -e "\nRemoving Finished"; read operation_done; clear; continue
+	fi
+
+	if [[ "$operation" == "List packages" ]]
+	then
+		lib=$(pacman -Qq | fzf --color=bw --reverse --no-scrollbar --preview 'pacman -Qil {}' --layout=reverse)
+		clear; continue
+	fi
+	
+	if [[ "$operation" == "Autoremove" ]]
+	then
+		sudo pacman -Rcns $(pacman -Qdtq)
+		echo -e "\nAutoremove Finished"; read operation_done; clear; continue
+	fi
+	if [[ "$operation" == "AUR Install" ]]
+	then
+		lib=$(yay --show --complete | fzf --color=bw --reverse --no-scrollbar --layout=reverse | awk '{print $1}')
+		if [[ "$lib" == "" ]]
+		then clear; continue; fi 
+		clear
+		if [[ "$lib" != "" ]]; then yay -S $lib; fi
+		echo -e "\nInstallation Finished"; read operation_done; clear; continue
+	fi
+	if [[ "$operation" == "AUR Remove" ]]
+	then
+		lib=$(yay -Q | fzf --color=bw --reverse --no-scrollbar --layout=reverse | awk '{print $1}')
+		if [[ "$lib" == "" ]]
+		then clear; continue; fi 
+		clear
+		if [[ "$lib" != "" ]]; then yay -R $lib; fi
+		echo -e "\nRemoving Finished"; read operation_done; clear; continue
+	fi
+	if [[ "$operation" == "AUR List packages" ]]
+	then
+		lib=$(yay -Q | fzf --color=bw --reverse --no-scrollbar --layout=reverse | awk '{print $1}')
+		clear; continue
+	fi
+	if [[ "$operation" == "AUR Autoremove" ]]
+	then
+		yay -c $lib
+		echo -e "\nAutoremove Finished"; read operation_done; clear; continue
+	fi
+done
